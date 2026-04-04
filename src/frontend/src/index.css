@@ -53,7 +53,6 @@
     --sidebar-ring: 0.62 0.12 190;
   }
 
-  /* ── Green theme ───────────────────────────────────── */
   [data-theme="green"] {
     --navy: 0.22 0.08 155;
     --teal: 0.58 0.16 145;
@@ -68,7 +67,6 @@
     --sidebar-ring: 0.58 0.16 145;
   }
 
-  /* ── Red theme ─────────────────────────────────────── */
   [data-theme="red"] {
     --navy: 0.22 0.06 30;
     --teal: 0.58 0.2 25;
@@ -83,7 +81,6 @@
     --sidebar-ring: 0.58 0.2 25;
   }
 
-  /* ── Purple theme ──────────────────────────────────── */
   [data-theme="purple"] {
     --navy: 0.22 0.07 295;
     --teal: 0.58 0.16 295;
@@ -98,7 +95,6 @@
     --sidebar-ring: 0.58 0.16 295;
   }
 
-  /* ── Orange theme ──────────────────────────────────── */
   [data-theme="orange"] {
     --navy: 0.25 0.07 50;
     --teal: 0.62 0.2 50;
@@ -113,7 +109,6 @@
     --sidebar-ring: 0.62 0.2 50;
   }
 
-  /* ── Pink theme ────────────────────────────────────── */
   [data-theme="pink"] {
     --navy: 0.22 0.07 350;
     --teal: 0.6 0.2 350;
@@ -128,7 +123,6 @@
     --sidebar-ring: 0.6 0.2 350;
   }
 
-  /* ── Indigo theme ──────────────────────────────────── */
   [data-theme="indigo"] {
     --navy: 0.22 0.09 275;
     --teal: 0.55 0.22 275;
@@ -143,7 +137,6 @@
     --sidebar-ring: 0.55 0.22 275;
   }
 
-  /* ── Teal theme ────────────────────────────────────── */
   [data-theme="teal"] {
     --navy: 0.22 0.08 180;
     --teal: 0.58 0.18 180;
@@ -158,7 +151,6 @@
     --sidebar-ring: 0.58 0.18 180;
   }
 
-  /* ── Gold theme ────────────────────────────────────── */
   [data-theme="gold"] {
     --navy: 0.28 0.06 80;
     --teal: 0.68 0.18 80;
@@ -180,4 +172,12 @@
     @apply bg-background text-foreground;
     font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   }
+}
+
+/* Active tab: solid theme color highlight */
+[data-slot="tabs-trigger"][data-state="active"] {
+  background-color: oklch(var(--teal)) !important;
+  color: white !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
