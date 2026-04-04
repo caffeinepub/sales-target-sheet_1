@@ -4,9 +4,10 @@ import { BarChart3, LogOut, User } from "lucide-react";
 interface TopNavProps {
   onLogout?: () => void;
   mobile?: string;
+  displayName?: string;
 }
 
-export default function TopNav({ onLogout, mobile }: TopNavProps) {
+export default function TopNav({ onLogout, mobile, displayName }: TopNavProps) {
   return (
     <header
       className="w-full py-3 px-4 md:px-8 flex items-center justify-between"
@@ -49,10 +50,15 @@ export default function TopNav({ onLogout, mobile }: TopNavProps) {
             data-ocid="nav.user.label"
           >
             <User className="w-4 h-4 text-white/80" />
-            <div className="flex flex-col leading-none">
+            <div className="flex flex-col leading-none gap-0.5">
               <span className="text-white/50 text-[10px] uppercase tracking-widest font-medium">
                 User
               </span>
+              {displayName && (
+                <span className="text-white font-semibold text-xs">
+                  {displayName}
+                </span>
+              )}
               <span className="text-white font-semibold text-sm">{mobile}</span>
             </div>
           </div>

@@ -31,6 +31,10 @@ const COLOR_THEMES: { id: ColorTheme; label: string; swatch: string }[] = [
   { id: "gold", label: "Gold", swatch: "oklch(0.68 0.18 80)" },
 ];
 
+function getDisplayNameKey(mobile: string) {
+  return `display_name_${mobile}`;
+}
+
 interface InlineRenameProps {
   currentLabel: string;
   onConfirm: (newLabel: string) => void;
@@ -255,9 +259,13 @@ function UserRow({ userMobile, isSelf, adminMobile, onDelete }: UserRowProps) {
 
 interface PratikSoniPageProps {
   mobile: string;
+  onNameChange?: (name: string) => void;
 }
 
-export default function PratikSoniPage({ mobile }: PratikSoniPageProps) {
+export default function PratikSoniPage({
+  mobile,
+  onNameChange,
+}: PratikSoniPageProps) {
   const { currencySymbol, colorTheme, setCurrencySymbol, setColorTheme } =
     useSettings();
   const {
@@ -274,6 +282,37 @@ export default function PratikSoniPage({ mobile }: PratikSoniPageProps) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [users, setUsers] = useState<string[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
+
+  // ── Profile / Display Name state ──
+  const nameKey = getDisplayNameKey(mobile);
+  const [displayName, setDisplayName] = useState<string>(
+    () => localStorage.getItem(nameKey) ?? "",
+  );
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+
+  const handleEditNameOpen = () => {
+    setNameInput(displayName || mobile);
+    setIsEditingName(true);
+  };
+
+  const handleNameSave = () => {
+    const trimmed = nameInput.trim();
+    const saved = trimmed || "";
+    localStorage.setItem(nameKey, saved);
+    setDisplayName(saved);
+    setIsEditingName(false);
+    onNameChange?.(saved);
+  };
+
+  const handleNameCancel = () => {
+    setIsEditingName(false);
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleNameSave();
+    if (e.key === "Escape") handleNameCancel();
+  };
 
   useEffect(() => {
     if (!actor || !mobile) return;
@@ -336,6 +375,75 @@ export default function PratikSoniPage({ mobile }: PratikSoniPageProps) {
       </div>
 
       <div className="space-y-8">
+        {/* ── Profile Section ── */}
+        <section
+          className="rounded-xl border border-border bg-card shadow-sm overflow-hidden"
+          data-ocid="settings.profile.section"
+        >
+          <div className="px-5 py-4 border-b border-border">
+            <h2 className="text-base font-semibold text-foreground">Profile</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Your display name shown in the app
+            </p>
+          </div>
+          <div className="px-5 py-4">
+            {isEditingName ? (
+              <div className="flex items-center gap-2">
+                <Input
+                  autoFocus
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  onKeyDown={handleNameKeyDown}
+                  placeholder="Enter your name..."
+                  className="h-9 text-sm flex-1"
+                  data-ocid="settings.profile.input"
+                />
+                <button
+                  type="button"
+                  onClick={handleNameSave}
+                  className="p-2 rounded text-green-600 hover:bg-green-50 transition-colors flex-shrink-0"
+                  aria-label="Save display name"
+                  data-ocid="settings.profile.save_button"
+                >
+                  <Check className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNameCancel}
+                  className="p-2 rounded text-muted-foreground hover:bg-secondary transition-colors flex-shrink-0"
+                  aria-label="Cancel editing name"
+                  data-ocid="settings.profile.cancel_button"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-foreground">
+                    {displayName || mobile}
+                  </span>
+                  {displayName && (
+                    <span className="text-xs text-muted-foreground mt-0.5">
+                      {mobile}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground flex-shrink-0"
+                  onClick={handleEditNameOpen}
+                  aria-label="Edit display name"
+                  data-ocid="settings.profile.edit_button"
+                >
+                  <Pencil className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* ── Currency Section ── */}
         <section
           className="rounded-xl border border-border bg-card shadow-sm overflow-hidden"

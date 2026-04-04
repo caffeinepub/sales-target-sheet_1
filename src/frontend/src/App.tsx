@@ -36,11 +36,23 @@ function AppInner({
   mobile: string;
   onLogout: () => void;
 }) {
+  const [displayName, setDisplayName] = useState<string>(
+    () => localStorage.getItem(`display_name_${mobile}`) ?? "",
+  );
+
+  const handleNameChange = (name: string) => {
+    setDisplayName(name);
+  };
+
   return (
     <UserProvider mobile={mobile}>
       <SettingsProvider mobile={mobile}>
         <div className="min-h-screen bg-background flex flex-col">
-          <TopNav mobile={mobile} onLogout={onLogout} />
+          <TopNav
+            mobile={mobile}
+            onLogout={onLogout}
+            displayName={displayName || undefined}
+          />
           <main className="flex-1 px-4 py-6 md:px-8">
             <Tabs defaultValue="target" className="max-w-5xl mx-auto">
               <TabsList className="mb-6 w-full sm:w-auto" data-ocid="app.tabs">
@@ -64,7 +76,10 @@ function AppInner({
               </TabsContent>
 
               <TabsContent value="pratik-soni">
-                <PratikSoniPage mobile={mobile} />
+                <PratikSoniPage
+                  mobile={mobile}
+                  onNameChange={handleNameChange}
+                />
               </TabsContent>
             </Tabs>
           </main>
