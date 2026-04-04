@@ -51,7 +51,7 @@ function AppInner({
                   Plan
                 </TabsTrigger>
                 <TabsTrigger value="pratik-soni" data-ocid="app.settings.tab">
-                  PRATIK SONI
+                  {mobile}
                 </TabsTrigger>
               </TabsList>
 
