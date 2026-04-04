@@ -90,6 +90,7 @@ export class ExternalBlob {
     }
 }
 export interface SalesData {
+    value: Category;
     plan: Category;
     withoutCoin: Category;
     overallSale: Category;
@@ -101,70 +102,145 @@ export interface SalesKey {
     year: bigint;
 }
 export interface Category {
-    achieved: bigint;
-    target: bigint;
+    achieved: number;
+    target: number;
 }
 export interface backendInterface {
-    getAllMonths(): Promise<Array<[SalesKey, SalesData]>>;
-    getAllMonthsSorted(): Promise<Array<[SalesKey, SalesData]>>;
-    getMonth(key: SalesKey): Promise<SalesData>;
-    saveMonth(key: SalesKey, data: SalesData): Promise<void>;
+    deleteUser(adminMobileId: string, targetMobile: string): Promise<boolean>;
+    getAllMonths(userMobile: string): Promise<Array<[SalesKey, SalesData]>>;
+    getAllMonthsSorted(userMobile: string): Promise<Array<[SalesKey, SalesData]>>;
+    getMonth(userMobile: string, key: SalesKey): Promise<SalesData>;
+    isAdminUser(mobile: string): Promise<boolean>;
+    listUsers(): Promise<Array<string>>;
+    loginUser(mobile: string, password: string): Promise<boolean>;
+    registerUser(mobile: string, password: string): Promise<boolean>;
+    saveMonth(userMobile: string, key: SalesKey, data: SalesData): Promise<void>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async getAllMonths(): Promise<Array<[SalesKey, SalesData]>> {
+    async deleteUser(arg0: string, arg1: string): Promise<boolean> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllMonths();
+                const result = await this.actor.deleteUser(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllMonths();
+            const result = await this.actor.deleteUser(arg0, arg1);
             return result;
         }
     }
-    async getAllMonthsSorted(): Promise<Array<[SalesKey, SalesData]>> {
+    async getAllMonths(arg0: string): Promise<Array<[SalesKey, SalesData]>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllMonthsSorted();
+                const result = await this.actor.getAllMonths(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllMonthsSorted();
+            const result = await this.actor.getAllMonths(arg0);
             return result;
         }
     }
-    async getMonth(arg0: SalesKey): Promise<SalesData> {
+    async getAllMonthsSorted(arg0: string): Promise<Array<[SalesKey, SalesData]>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getMonth(arg0);
+                const result = await this.actor.getAllMonthsSorted(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getMonth(arg0);
+            const result = await this.actor.getAllMonthsSorted(arg0);
             return result;
         }
     }
-    async saveMonth(arg0: SalesKey, arg1: SalesData): Promise<void> {
+    async getMonth(arg0: string, arg1: SalesKey): Promise<SalesData> {
         if (this.processError) {
             try {
-                const result = await this.actor.saveMonth(arg0, arg1);
+                const result = await this.actor.getMonth(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.saveMonth(arg0, arg1);
+            const result = await this.actor.getMonth(arg0, arg1);
+            return result;
+        }
+    }
+    async isAdminUser(arg0: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isAdminUser(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isAdminUser(arg0);
+            return result;
+        }
+    }
+    async listUsers(): Promise<Array<string>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.listUsers();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.listUsers();
+            return result;
+        }
+    }
+    async loginUser(arg0: string, arg1: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.loginUser(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.loginUser(arg0, arg1);
+            return result;
+        }
+    }
+    async registerUser(arg0: string, arg1: string): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.registerUser(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.registerUser(arg0, arg1);
+            return result;
+        }
+    }
+    async saveMonth(arg0: string, arg1: SalesKey, arg2: SalesData): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.saveMonth(arg0, arg1, arg2);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.saveMonth(arg0, arg1, arg2);
             return result;
         }
     }

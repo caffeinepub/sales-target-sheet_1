@@ -8,6 +8,7 @@ export interface None {
 }
 export type Option<T> = Some<T> | None;
 export interface SalesData {
+    value: Category;
     plan: Category;
     withoutCoin: Category;
     overallSale: Category;
@@ -19,12 +20,17 @@ export interface SalesKey {
     year: bigint;
 }
 export interface Category {
-    achieved: bigint;
-    target: bigint;
+    achieved: number;
+    target: number;
 }
 export interface backendInterface {
-    getAllMonths(): Promise<Array<[SalesKey, SalesData]>>;
-    getAllMonthsSorted(): Promise<Array<[SalesKey, SalesData]>>;
-    getMonth(key: SalesKey): Promise<SalesData>;
-    saveMonth(key: SalesKey, data: SalesData): Promise<void>;
+    deleteUser(adminMobileId: string, targetMobile: string): Promise<boolean>;
+    getAllMonths(userMobile: string): Promise<Array<[SalesKey, SalesData]>>;
+    getAllMonthsSorted(userMobile: string): Promise<Array<[SalesKey, SalesData]>>;
+    getMonth(userMobile: string, key: SalesKey): Promise<SalesData>;
+    isAdminUser(mobile: string): Promise<boolean>;
+    listUsers(): Promise<Array<string>>;
+    loginUser(mobile: string, password: string): Promise<boolean>;
+    registerUser(mobile: string, password: string): Promise<boolean>;
+    saveMonth(userMobile: string, key: SalesKey, data: SalesData): Promise<void>;
 }

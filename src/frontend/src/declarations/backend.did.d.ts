@@ -10,8 +10,9 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface Category { 'achieved' : bigint, 'target' : bigint }
+export interface Category { 'achieved' : number, 'target' : number }
 export interface SalesData {
+  'value' : Category,
   'plan' : Category,
   'withoutCoin' : Category,
   'overallSale' : Category,
@@ -20,10 +21,15 @@ export interface SalesData {
 }
 export interface SalesKey { 'month' : bigint, 'year' : bigint }
 export interface _SERVICE {
-  'getAllMonths' : ActorMethod<[], Array<[SalesKey, SalesData]>>,
-  'getAllMonthsSorted' : ActorMethod<[], Array<[SalesKey, SalesData]>>,
-  'getMonth' : ActorMethod<[SalesKey], SalesData>,
-  'saveMonth' : ActorMethod<[SalesKey, SalesData], undefined>,
+  'deleteUser' : ActorMethod<[string, string], boolean>,
+  'getAllMonths' : ActorMethod<[string], Array<[SalesKey, SalesData]>>,
+  'getAllMonthsSorted' : ActorMethod<[string], Array<[SalesKey, SalesData]>>,
+  'getMonth' : ActorMethod<[string, SalesKey], SalesData>,
+  'isAdminUser' : ActorMethod<[string], boolean>,
+  'listUsers' : ActorMethod<[], Array<string>>,
+  'loginUser' : ActorMethod<[string, string], boolean>,
+  'registerUser' : ActorMethod<[string, string], boolean>,
+  'saveMonth' : ActorMethod<[string, SalesKey, SalesData], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -53,6 +53,126 @@
     --sidebar-ring: 0.62 0.12 190;
   }
 
+  /* ── Green theme ───────────────────────────────────── */
+  [data-theme="green"] {
+    --navy: 0.22 0.08 155;
+    --teal: 0.58 0.16 145;
+    --teal-light: 0.9 0.07 145;
+    --primary: 0.58 0.16 145;
+    --accent: 0.9 0.07 145;
+    --accent-foreground: 0.22 0.08 155;
+    --ring: 0.58 0.16 145;
+    --chart-1: 0.58 0.16 145;
+    --sidebar: 0.22 0.08 155;
+    --sidebar-primary: 0.58 0.16 145;
+    --sidebar-ring: 0.58 0.16 145;
+  }
+
+  /* ── Red theme ─────────────────────────────────────── */
+  [data-theme="red"] {
+    --navy: 0.22 0.06 30;
+    --teal: 0.58 0.2 25;
+    --teal-light: 0.9 0.08 25;
+    --primary: 0.58 0.2 25;
+    --accent: 0.9 0.08 25;
+    --accent-foreground: 0.22 0.06 30;
+    --ring: 0.58 0.2 25;
+    --chart-1: 0.58 0.2 25;
+    --sidebar: 0.22 0.06 30;
+    --sidebar-primary: 0.58 0.2 25;
+    --sidebar-ring: 0.58 0.2 25;
+  }
+
+  /* ── Purple theme ──────────────────────────────────── */
+  [data-theme="purple"] {
+    --navy: 0.22 0.07 295;
+    --teal: 0.58 0.16 295;
+    --teal-light: 0.9 0.07 295;
+    --primary: 0.58 0.16 295;
+    --accent: 0.9 0.07 295;
+    --accent-foreground: 0.22 0.07 295;
+    --ring: 0.58 0.16 295;
+    --chart-1: 0.58 0.16 295;
+    --sidebar: 0.22 0.07 295;
+    --sidebar-primary: 0.58 0.16 295;
+    --sidebar-ring: 0.58 0.16 295;
+  }
+
+  /* ── Orange theme ──────────────────────────────────── */
+  [data-theme="orange"] {
+    --navy: 0.25 0.07 50;
+    --teal: 0.62 0.2 50;
+    --teal-light: 0.92 0.08 50;
+    --primary: 0.62 0.2 50;
+    --accent: 0.92 0.08 50;
+    --accent-foreground: 0.25 0.07 50;
+    --ring: 0.62 0.2 50;
+    --chart-1: 0.62 0.2 50;
+    --sidebar: 0.25 0.07 50;
+    --sidebar-primary: 0.62 0.2 50;
+    --sidebar-ring: 0.62 0.2 50;
+  }
+
+  /* ── Pink theme ────────────────────────────────────── */
+  [data-theme="pink"] {
+    --navy: 0.22 0.07 350;
+    --teal: 0.6 0.2 350;
+    --teal-light: 0.92 0.08 350;
+    --primary: 0.6 0.2 350;
+    --accent: 0.92 0.08 350;
+    --accent-foreground: 0.22 0.07 350;
+    --ring: 0.6 0.2 350;
+    --chart-1: 0.6 0.2 350;
+    --sidebar: 0.22 0.07 350;
+    --sidebar-primary: 0.6 0.2 350;
+    --sidebar-ring: 0.6 0.2 350;
+  }
+
+  /* ── Indigo theme ──────────────────────────────────── */
+  [data-theme="indigo"] {
+    --navy: 0.22 0.09 275;
+    --teal: 0.55 0.22 275;
+    --teal-light: 0.9 0.08 275;
+    --primary: 0.55 0.22 275;
+    --accent: 0.9 0.08 275;
+    --accent-foreground: 0.22 0.09 275;
+    --ring: 0.55 0.22 275;
+    --chart-1: 0.55 0.22 275;
+    --sidebar: 0.22 0.09 275;
+    --sidebar-primary: 0.55 0.22 275;
+    --sidebar-ring: 0.55 0.22 275;
+  }
+
+  /* ── Teal theme ────────────────────────────────────── */
+  [data-theme="teal"] {
+    --navy: 0.22 0.08 180;
+    --teal: 0.58 0.18 180;
+    --teal-light: 0.9 0.07 180;
+    --primary: 0.58 0.18 180;
+    --accent: 0.9 0.07 180;
+    --accent-foreground: 0.22 0.08 180;
+    --ring: 0.58 0.18 180;
+    --chart-1: 0.58 0.18 180;
+    --sidebar: 0.22 0.08 180;
+    --sidebar-primary: 0.58 0.18 180;
+    --sidebar-ring: 0.58 0.18 180;
+  }
+
+  /* ── Gold theme ────────────────────────────────────── */
+  [data-theme="gold"] {
+    --navy: 0.28 0.06 80;
+    --teal: 0.68 0.18 80;
+    --teal-light: 0.93 0.07 80;
+    --primary: 0.68 0.18 80;
+    --accent: 0.93 0.07 80;
+    --accent-foreground: 0.28 0.06 80;
+    --ring: 0.68 0.18 80;
+    --chart-1: 0.68 0.18 80;
+    --sidebar: 0.28 0.06 80;
+    --sidebar-primary: 0.68 0.18 80;
+    --sidebar-ring: 0.68 0.18 80;
+  }
+
   * {
     @apply border-border;
   }

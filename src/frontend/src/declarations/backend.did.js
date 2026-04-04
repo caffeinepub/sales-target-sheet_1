@@ -10,10 +10,11 @@ import { IDL } from '@icp-sdk/core/candid';
 
 export const SalesKey = IDL.Record({ 'month' : IDL.Nat, 'year' : IDL.Nat });
 export const Category = IDL.Record({
-  'achieved' : IDL.Nat,
-  'target' : IDL.Nat,
+  'achieved' : IDL.Float64,
+  'target' : IDL.Float64,
 });
 export const SalesData = IDL.Record({
+  'value' : Category,
   'plan' : Category,
   'withoutCoin' : Category,
   'overallSale' : Category,
@@ -22,26 +23,35 @@ export const SalesData = IDL.Record({
 });
 
 export const idlService = IDL.Service({
+  'deleteUser' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
   'getAllMonths' : IDL.Func(
-      [],
+      [IDL.Text],
       [IDL.Vec(IDL.Tuple(SalesKey, SalesData))],
       ['query'],
     ),
   'getAllMonthsSorted' : IDL.Func(
-      [],
+      [IDL.Text],
       [IDL.Vec(IDL.Tuple(SalesKey, SalesData))],
       ['query'],
     ),
-  'getMonth' : IDL.Func([SalesKey], [SalesData], ['query']),
-  'saveMonth' : IDL.Func([SalesKey, SalesData], [], []),
+  'getMonth' : IDL.Func([IDL.Text, SalesKey], [SalesData], ['query']),
+  'isAdminUser' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
+  'listUsers' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+  'loginUser' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+  'registerUser' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+  'saveMonth' : IDL.Func([IDL.Text, SalesKey, SalesData], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
   const SalesKey = IDL.Record({ 'month' : IDL.Nat, 'year' : IDL.Nat });
-  const Category = IDL.Record({ 'achieved' : IDL.Nat, 'target' : IDL.Nat });
+  const Category = IDL.Record({
+    'achieved' : IDL.Float64,
+    'target' : IDL.Float64,
+  });
   const SalesData = IDL.Record({
+    'value' : Category,
     'plan' : Category,
     'withoutCoin' : Category,
     'overallSale' : Category,
@@ -50,18 +60,23 @@ export const idlFactory = ({ IDL }) => {
   });
   
   return IDL.Service({
+    'deleteUser' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
     'getAllMonths' : IDL.Func(
-        [],
+        [IDL.Text],
         [IDL.Vec(IDL.Tuple(SalesKey, SalesData))],
         ['query'],
       ),
     'getAllMonthsSorted' : IDL.Func(
-        [],
+        [IDL.Text],
         [IDL.Vec(IDL.Tuple(SalesKey, SalesData))],
         ['query'],
       ),
-    'getMonth' : IDL.Func([SalesKey], [SalesData], ['query']),
-    'saveMonth' : IDL.Func([SalesKey, SalesData], [], []),
+    'getMonth' : IDL.Func([IDL.Text, SalesKey], [SalesData], ['query']),
+    'isAdminUser' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
+    'listUsers' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+    'loginUser' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+    'registerUser' : IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
+    'saveMonth' : IDL.Func([IDL.Text, SalesKey, SalesData], [], []),
   });
 };
 

@@ -13,7 +13,19 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { SalesData } from "../backend.d";
-import { MONTHS, useSalesMonth, useSaveMonth } from "../hooks/useQueries";
+import { useCategories } from "../hooks/useCategories";
+import type { CustomCategoryValues } from "../hooks/useCustomData";
+import { getCustomData, saveCustomData } from "../hooks/useCustomData";
+import {
+  FY_MONTH_ORDER,
+  MONTHS,
+  currentFYStartYear,
+  emptySalesData,
+  getFYLabel,
+  useSalesMonth,
+  useSaveMonth,
+} from "../hooks/useQueries";
+import { useUser } from "../hooks/useUser";
 import TargetsTable from "./TargetsTable";
 
 interface Props {
@@ -23,8 +35,16 @@ interface Props {
   onYearChange: (y: number) => void;
 }
 
-const currentYear = new Date().getFullYear();
-const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => currentYear - 2 + i);
+const curFY = currentFYStartYear();
+const FY_OPTIONS = Array.from({ length: 5 }, (_, i) => curFY - 2 + i);
+
+function getFYMonthOptions(fyStart: number) {
+  return FY_MONTH_ORDER.map((month) => {
+    const year = month >= 4 ? fyStart : fyStart + 1;
+    return { month, year, label: `${MONTHS[month - 1]} ${year}` };
+  });
+}
+
 const SKELETON_ROWS = ["r1", "r2", "r3", "r4", "r5", "r6"];
 
 export default function TargetsPage({
@@ -33,36 +53,49 @@ export default function TargetsPage({
   onMonthChange,
   onYearChange,
 }: Props) {
+  const { mobile } = useUser();
+  const userMobile = mobile ?? "";
+
   const { data, isLoading } = useSalesMonth(selectedMonth, selectedYear);
   const saveMonth = useSaveMonth();
 
+  const { visibleCategories, renameCategory, deleteCategory } =
+    useCategories(userMobile);
+
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<SalesData | null>(null);
-  // Track which month/year we last entered edit mode for
   const [editKey, setEditKey] = useState<string | null>(null);
+  const [customEditData, setCustomEditData] =
+    useState<CustomCategoryValues | null>(null);
 
-  // If month/year changed while in edit mode, exit edit mode
+  const activeFYStart = selectedMonth >= 4 ? selectedYear : selectedYear - 1;
+  const [displayFYStart, setDisplayFYStart] = useState(activeFYStart);
+
   const currentKey = `${selectedMonth}-${selectedYear}`;
   const inEditForCurrentKey = isEditing && editKey === currentKey;
 
-  const handleMonthChange = (v: number) => {
+  const handleFYChange = (fyStart: number) => {
+    setDisplayFYStart(fyStart);
     setIsEditing(false);
     setEditData(null);
     setEditKey(null);
-    onMonthChange(v);
+    setCustomEditData(null);
+    onMonthChange(4);
+    onYearChange(fyStart);
   };
 
-  const handleYearChange = (v: number) => {
+  const handleMonthYearSelect = (month: number, year: number) => {
     setIsEditing(false);
     setEditData(null);
     setEditKey(null);
-    onYearChange(v);
+    setCustomEditData(null);
+    onMonthChange(month);
+    onYearChange(year);
   };
 
   const handleEditStart = () => {
-    if (data) {
-      setEditData(structuredClone(data));
-    }
+    setEditData(structuredClone(data ?? emptySalesData()));
+    setCustomEditData(getCustomData(userMobile, selectedMonth, selectedYear));
     setIsEditing(true);
     setEditKey(currentKey);
   };
@@ -71,6 +104,7 @@ export default function TargetsPage({
     setIsEditing(false);
     setEditData(null);
     setEditKey(null);
+    setCustomEditData(null);
   };
 
   const handleSave = async () => {
@@ -81,17 +115,34 @@ export default function TargetsPage({
         year: selectedYear,
         data: editData,
       });
+      // Also save custom data to localStorage
+      saveCustomData(
+        userMobile,
+        selectedMonth,
+        selectedYear,
+        customEditData ?? {},
+      );
       toast.success("Targets saved successfully");
       setIsEditing(false);
       setEditData(null);
       setEditKey(null);
+      setCustomEditData(null);
     } catch (err) {
       toast.error("Failed to save. Please try again.");
       console.error(err);
     }
   };
 
-  const displayData = inEditForCurrentKey && editData ? editData : data;
+  const displayData =
+    inEditForCurrentKey && editData ? editData : (data ?? emptySalesData());
+
+  const displayCustomData =
+    inEditForCurrentKey && customEditData
+      ? customEditData
+      : getCustomData(userMobile, selectedMonth, selectedYear);
+
+  const monthOptions = getFYMonthOptions(displayFYStart);
+  const selectedOptionKey = `${selectedMonth}-${selectedYear}`;
 
   return (
     <motion.div
@@ -112,41 +163,47 @@ export default function TargetsPage({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Month selector */}
+          {/* FY selector */}
           <Select
-            value={String(selectedMonth)}
-            onValueChange={(v) => handleMonthChange(Number(v))}
+            value={String(displayFYStart)}
+            onValueChange={(v) => handleFYChange(Number(v))}
           >
             <SelectTrigger
               className="w-36 bg-card border border-border"
-              data-ocid="targets.month.select"
+              data-ocid="targets.fy.select"
             >
-              <SelectValue placeholder="Month" />
+              <SelectValue placeholder="FY" />
             </SelectTrigger>
             <SelectContent>
-              {MONTHS.map((m, i) => (
-                <SelectItem key={m} value={String(i + 1)}>
-                  {m}
+              {FY_OPTIONS.map((fy) => (
+                <SelectItem key={fy} value={String(fy)}>
+                  {getFYLabel(fy)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          {/* Year selector */}
+          {/* Month selector (FY-ordered) */}
           <Select
-            value={String(selectedYear)}
-            onValueChange={(v) => handleYearChange(Number(v))}
+            value={selectedOptionKey}
+            onValueChange={(v) => {
+              const [m, y] = v.split("-").map(Number);
+              handleMonthYearSelect(m, y);
+            }}
           >
             <SelectTrigger
-              className="w-24 bg-card border border-border"
-              data-ocid="targets.year.select"
+              className="w-44 bg-card border border-border"
+              data-ocid="targets.month.select"
             >
-              <SelectValue placeholder="Year" />
+              <SelectValue placeholder="Month" />
             </SelectTrigger>
             <SelectContent>
-              {YEAR_OPTIONS.map((y) => (
-                <SelectItem key={y} value={String(y)}>
-                  {y}
+              {monthOptions.map((opt) => (
+                <SelectItem
+                  key={`${opt.month}-${opt.year}`}
+                  value={`${opt.month}-${opt.year}`}
+                >
+                  {opt.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -217,9 +274,14 @@ export default function TargetsPage({
             </div>
           ) : (
             <TargetsTable
-              data={displayData!}
+              data={displayData}
               isEditing={inEditForCurrentKey}
               onChange={setEditData}
+              categories={visibleCategories}
+              onRename={renameCategory}
+              onDelete={deleteCategory}
+              customData={displayCustomData}
+              onCustomChange={setCustomEditData}
             />
           )}
         </CardContent>

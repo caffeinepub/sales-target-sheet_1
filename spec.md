@@ -1,25 +1,38 @@
 # Sales Target Sheet
 
 ## Current State
-New project. No existing code.
+The app has these main tabs:
+- **Monthly** (TargetsPage) — per-month entry/view for sales categories
+- **Monthly Summary** (MonthlySummaryPage) — FY-aggregated monthly totals
+- **Yearly Summary** (YearlySummaryPage) — aggregated by financial year
+- **Plan** (PlanPage) — GH/RGA & VALUE targets, with its own Monthly/Monthly Summary/Yearly sub-tabs
+- **PRATIK SONI** — settings/admin page
 
 ## Requested Changes (Diff)
 
 ### Add
-- A sales target tracking sheet for a single user
-- 5 categories: Overall Sale, W/O Coin, Studded, Plain, Plan
-- Per category: Target (manual input), Achieved (manual input), Remaining (auto = Target - Achieved), % Achievement (auto = Achieved / Target * 100)
-- Monthly view: user can select month/year to set targets and log achievements
-- Edit mode: user can edit Target and Achieved values inline
-- Summary row showing totals across all categories
-- Data persisted per month in the backend
+- A new top-level tab called **"Target"** in the main tab bar
+- This tab contains nested sub-tabs: **Monthly**, **Monthly Summary**, **Yearly Summary**
+- The sub-tabs reuse the existing TargetsPage, MonthlySummaryPage, and YearlySummaryPage components respectively
+- A new wrapper component `TargetPageWrapper` to host these 3 sub-tabs (pattern mirrors PlanPage)
 
 ### Modify
-- Nothing (new project)
+- `App.tsx`: Add a new `<TabsTrigger value="target">Target</TabsTrigger>` and a corresponding `<TabsContent value="target">` that renders `<TargetPageWrapper />`
+- `TargetPageWrapper` must manage selectedMonth/selectedYear/selectedFYStart state internally (same as App currently does for those tabs)
 
 ### Remove
-- Nothing (new project)
+- The three separate top-level tabs **Monthly**, **Monthly Summary**, **Yearly Summary** should be removed from the top-level tab bar (they move inside the new Target tab)
 
 ## Implementation Plan
-1. Backend: Store monthly target records per category. Support get and upsert operations for a given month/year.
-2. Frontend: Month/year selector at top. Table with 5 category rows + summary. Editable Target and Achieved fields. Auto-calculated Remaining and % columns. Save button to persist changes.
+1. Create `src/frontend/src/components/TargetPageWrapper.tsx`:
+   - Internal state: selectedMonth, selectedYear, selectedFYStart
+   - Renders shadcn Tabs with 3 triggers: monthly, monthly-summary, yearly-summary
+   - TabsContent: TargetsPage, MonthlySummaryPage, YearlySummaryPage
+   - Passes down props and sync handlers correctly (same logic as App.tsx currently does)
+2. Update `App.tsx`:
+   - Remove imports and tab entries for Monthly, Monthly Summary, Yearly Summary
+   - Add import for TargetPageWrapper
+   - Remove selectedMonth, selectedYear, selectedFYStart state and handlers from AppInner (they move into TargetPageWrapper)
+   - Add `<TabsTrigger value="target">Target</TabsTrigger>`
+   - Add `<TabsContent value="target"><TargetPageWrapper /></TabsContent>`
+   - Set `defaultValue="target"` on main Tabs (or keep as monthly if preferred)
